@@ -1,0 +1,20 @@
+import streamlit as st
+import requests
+
+def get_mock_response(prompt:str):
+    return f"You have to pay for it {prompt}"
+
+def get_response_from_fastapi(prompt:str):
+    response = requests.post("http://localhost:8000/prompt", json={"prompt":prompt})
+    return response
+
+st.title("Select your drink")
+
+with st.form("prompt_form"):
+    prompt = st.text_input("What you want for today, my friend ?")
+
+    submit = st.form_submit_button("Order")
+
+    if submit:
+        response = get_response_from_fastapi(prompt)
+        st.write(response)
