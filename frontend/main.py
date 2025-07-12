@@ -1,12 +1,17 @@
 import streamlit as st
 import requests
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 def get_mock_response(prompt:str):
     return f"You have to pay for it {prompt}"
 
 def get_response_from_fastapi(prompt:str):
-    response = requests.post("http://localhost:8000/prompt", json={"prompt":prompt})
-    return response
+    response = requests.post("http://localhost:8000/prompt/", json={"prompt":prompt})
+
+    return response.json()["message"]
 
 st.title("Select your drink")
 
