@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.core.config import settings
+from backend.core.settings import settings
 from backend.routers.query import router
 
 import dotenv

@@ -9,9 +9,10 @@ def get_mock_response(prompt:str):
     return f"You have to pay for it {prompt}"
 
 def get_response_from_fastapi(prompt:str):
-    response = requests.post("http://localhost:8000/prompt/", json={"prompt":prompt})
-
-    return response.json()["message"]
+    response = requests.post("http://localhost:8000/query/prompt/", json={"prompt":prompt})
+    data = response.json()
+    print(data)
+    return data
 
 st.title("Select your drink")
 
@@ -22,4 +23,6 @@ with st.form("prompt_form"):
 
     if submit:
         response = get_response_from_fastapi(prompt)
-        st.write(response)
+        st.write(response["description"])
+        st.write(response["ingredients"])
+        st.write(response["amount"])
