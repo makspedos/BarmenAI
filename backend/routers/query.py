@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.models.query import Cocktail, InputQuery
+from backend.models.query import InputQuery
 from backend.agent.config import LLMModel
 
 router = APIRouter(
@@ -18,4 +18,4 @@ async def get_prompt(prompt:str):
 async def post_prompt(data:InputQuery):
     print(data.prompt)
     response = await model.llm_response(data.prompt)
-    return Cocktail(ingredients=response.ingredients, description=response.description, amount=response.amount)
+    return response

@@ -23,6 +23,4 @@ with st.form("prompt_form"):
 
     if submit:
         response = get_response_from_fastapi(prompt)
-        st.write(response["description"])
-        st.write(response["ingredients"])
-        st.write(response["amount"])
+        st.write(response["answer"])
