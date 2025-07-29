@@ -1,46 +1,18 @@
 from openai import AsyncOpenAI
 import os
-import dotenv
-import json
-from backend.models.query import Cocktail
 from backend.models.query import JsonResponse
+from .tools import call_function, tools
+import json
+import dotenv
 
 dotenv.load_dotenv()
 
-def search_drink(query:str):
-    with open("all_cocktails.json", "r") as f:
-        return json.load(f)
-
-tools = [
-    {
-        "type":"function",
-        "function":{
-            "name":"search_drink",
-            "description":"Return a single drink and it's information based by provided user query",
-            "parameters":{
-                "type":"object",
-                "properties":{
-                    "query":{"type":"string"},
-                },
-                "required":["query"],
-                "additionalProperties":False,
-            },
-            "strict":True,
-        }
-    }
-]
-system_prompt = ("You are helpful barmen assistant that provide relative information about a drink. "
-                 "If user asks about non-existed drink or unrelated details - do share with him available menu.")
-
-async def call_function(name, args):
-    if name == "search_drink":
-        return search_drink(**args)
-
-
-class LLMModel():
+class LLMService:
     def __init__(self):
         self.client = AsyncOpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-        self.system_prompt = system_prompt
+        self.system_prompt = ("You are helpful barmen assistant that provide relative information about a drink."
+                              "You have to provide only matching cocktails based on query."
+                 "If user asks about non-existed drink or unrelated details - do share with him available menu and ask again.")
 
     async def llm_response(self,prompt:str):
         messages = [
@@ -59,7 +31,7 @@ class LLMModel():
             tools = tools,
             #response_format=Cocktail,
         )
-        print(completion.model_dump())
+        #print(completion.model_dump())
 
         for tool_call in completion.choices[0].message.tool_calls:
             name =tool_call.function.name
@@ -77,6 +49,7 @@ class LLMModel():
         )
 
         final_response = completion_2.choices[0].message.parsed
+        print(final_response)
         return final_response
 
 

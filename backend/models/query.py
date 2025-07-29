@@ -9,4 +9,4 @@ class Cocktail(BaseModel):
     amount:int = Field(description="Amount of ordered drinks if it was set")
 
 class JsonResponse(BaseModel):
-    response: str = Field(description="Provide a response based on info from menu")
+    response: str = Field(description="Provide a response based on user info and conformity with cocktails from the menu.")

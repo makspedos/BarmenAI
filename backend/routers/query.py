@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 from backend.models.query import InputQuery
-from backend.agent.config import LLMModel
+from backend.services.llm_service import LLMService
 
 router = APIRouter(
     prefix="/query",
     tags=["query"],
 )
-model = LLMModel()
+model = LLMService()
 
 
 @router.get("/prompt/{prompt}")
