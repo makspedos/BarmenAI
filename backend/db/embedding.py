@@ -1,5 +1,6 @@
 import json
-from connection import client, dense_index
+from backend.db.connection import client, dense_index
+from paths import BASE_PATH
 
 class CocktailEmbedder:
     def __init__(self):
@@ -60,7 +61,10 @@ class CocktailEmbedder:
         3. Create embedding via OpenAI model.
         4. Insert into Pinecone vector store with metadata.
         """
-        cocktails = self.load_cocktails_json("test_cocktails.json")
+
+        file_path = BASE_PATH / "all_cocktails.json"
+
+        cocktails = self.load_cocktails_json(file_path)
 
         for cocktail in cocktails:
             ingredients = ', '.join(
@@ -79,9 +83,24 @@ class CocktailEmbedder:
             embedding = self.create_embeddings(input_text=input_text)
             self.insert_embeddings(embedding, cocktail, ingredients)
 
+    def semantic_search(self, query):
+        embedding = self.client.embeddings.create(
+            input=query,
+            model="text-embedding-3-small",
+        )
+        vector = embedding.data[0].embedding
+        results = self.dense_index.query(
+            vector=vector,
+            top_k=2,
+            include_metadata=True,
+        )
+        return results
 
 
-if __name__ == '__main__':
-    embedder = CocktailEmbedder()
-    embedder.process_all_cocktails()
 
+
+
+# if __name__ == '__main__':
+#     embedding = CocktailEmbedder()
+#     #embedding.process_all_cocktails()
+#     print(embedding.semantic_search("I want something fresh, that delivered with cocktail glass. Ingredients: Lemon Juice"))

@@ -1,9 +1,10 @@
 from openai import AsyncOpenAI
 import os
 from backend.models.query import JsonResponse
-from .tools import call_function, tools
+from .tools import tools, call_function
 import json
 import dotenv
+from backend.db.embedding import CocktailEmbedder
 
 dotenv.load_dotenv()
 
@@ -29,17 +30,16 @@ class LLMService:
             model="gpt-4o-mini",
             messages= messages,
             tools = tools,
-            #response_format=Cocktail,
         )
-        #print(completion.model_dump())
-
+        embedder = CocktailEmbedder()
         for tool_call in completion.choices[0].message.tool_calls:
             name =tool_call.function.name
             args = json.loads(tool_call.function.arguments)
             messages.append(completion.choices[0].message)
 
-            result = await call_function(name, args)
-            messages.append({"role":"tool", "tool_call_id":tool_call.id, "content":json.dumps(result)})
+            result = call_function(name, embedder, args)
+            print(result)
+            messages.append({"role":"tool", "tool_call_id":tool_call.id, "content":json.dumps(result.to_dict())})
 
         completion_2 = await self.client.chat.completions.parse(
             model="gpt-4o-mini",

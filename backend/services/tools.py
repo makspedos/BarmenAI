@@ -1,16 +1,11 @@
-import json
-
-def search_drink(query:str):
-    with open("test_cocktails.json", "r") as f:
-        return json.load(f)
+from backend.db.embedding import CocktailEmbedder
 
 tools = [
     {
         "type":"function",
         "function":{
-            "name":"search_drink",
-            "description":"Return a single drink and it's information based by provided user query. "
-                          "The drink ingredients must accord to the query.",
+            "name":"semantic_search",
+            "description":"Brings cocktails information based on user query. ",
             "parameters":{
                 "type":"object",
                 "properties":{
@@ -24,7 +19,6 @@ tools = [
     }
 ]
 
-
-async def call_function(name, args):
-    if name == "search_drink":
-        return search_drink(**args)
+def call_function(name, obj:CocktailEmbedder, args):
+    if name == "semantic_search":
+        return obj.semantic_search(**args)
