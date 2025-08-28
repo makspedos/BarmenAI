@@ -1,11 +1,11 @@
 from pinecone import Pinecone, ServerlessSpec
 import os
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 import dotenv
 
 dotenv.load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
 index_name= "cocktail-index"

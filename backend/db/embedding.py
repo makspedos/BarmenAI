@@ -30,7 +30,7 @@ class CocktailEmbedder:
         return embedding.data[0].embedding
 
 
-    def insert_embeddings(self, embedding, cocktail, ingredients):
+    def insert_embeddings(self, embedding, cocktail, input_text):
         """Inserts embedding into Pinecone vector store with metadata"""
         response = dense_index.upsert(
             [
@@ -38,12 +38,9 @@ class CocktailEmbedder:
                     "id": cocktail['idDrink'],
                     "values": embedding,
                     "metadata": {
-                        "name": cocktail['strDrink'],
-                        "alcohol": cocktail['strAlcoholic'],
-                        "category": cocktail['strCategory'],
-                        "glass": cocktail['strGlass'],
+                        "text":input_text,
+                        "name":cocktail['strDrink'],
                         "image": cocktail['strDrinkThumb'],
-                        "ingredients": ingredients,
                     }
                 }
             ]
@@ -81,10 +78,10 @@ class CocktailEmbedder:
                 Glass: {cocktail['strGlass']}
             """
             embedding = self.create_embeddings(input_text=input_text)
-            self.insert_embeddings(embedding, cocktail, ingredients)
+            self.insert_embeddings(embedding, cocktail, input_text)
 
-    def semantic_search(self, query):
-        embedding = self.client.embeddings.create(
+    async def semantic_search(self, query):
+        embedding = await self.client.embeddings.create(
             input=query,
             model="text-embedding-3-small",
         )
@@ -99,8 +96,7 @@ class CocktailEmbedder:
 
 
 
-
+#
 # if __name__ == '__main__':
 #     embedding = CocktailEmbedder()
-#     #embedding.process_all_cocktails()
-#     print(embedding.semantic_search("I want something fresh, that delivered with cocktail glass. Ingredients: Lemon Juice"))
+#     embedding.process_all_cocktails()
