@@ -4,21 +4,23 @@ system_prompts = {
         "init_prompt":
             {
                 "role": "system",
-                "content": "You are helpful barmen assistant that provide relative information about a drink."
-                            "You have to provide only matching cocktails based on query.",
+                "content": "You are helpful barmen assistant that provide relative information about a drink. "
+                            "You have to provide only matching cocktails based on query (max 3 cocktails) "
+                            "If user asked irrelevant question or provided an empty query, get a maximum 2 random cocktails from the menu ",
+
+
             },
         "tool_prompt":
             {
                 "role": "system",
                 "content": (
                     "You are a bartender assistant. Use the tool results to map the Cocktail schema "
-                    "(extracting name, ingredients, instructions, glass, image from fields in metadata and text)"
+                    "(extracting name, ingredients, instructions, glass, image from fields in metadata and text) "
                     "and respond strictly with format instructions in description"
                     "If the user requests only specific fields (like just names) - "
-                    "return only those fields in the schema, leaving other fields null."
-                    "Provide a short human answer based on information about cocktails"
-                    "Use all matches collected in previous tool calls."
-                    "If user asked irrelevant question, provide a list of cocktails from the menu or ask him to make more understandable request"
+                    "return only those fields in the schema, leaving other fields null. "
+                    "Provide a short human answer based on information about cocktails "
+                    "If user asked irrelevant question ask him to make more understandable request"
                 )
             },
         "scripted_prompt":
@@ -28,8 +30,8 @@ system_prompts = {
                     "You are a bartender assistant. In this section you got wrong query from user and that`s why you didnt get "
                     "the tool results to map the Cocktail schema"
                     "instead inform user about irrelevant query, ask him to make correct request and show him 3 random cocktails that will match the Cocktail schema"
-                    "(extracting name, ingredients, instructions, glass, image from fields in metadata and text)"
-                    "and respond strictly with format instructions in description"
+                    "(extracting name, ingredients, instructions, glass, image from fields in metadata and text) "
+                    "and respond strictly with format instructions in description "
                 )
             }
     }

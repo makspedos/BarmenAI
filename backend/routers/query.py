@@ -6,8 +6,17 @@ router = APIRouter(
     prefix="/query",
     tags=["query"],
 )
-#model = LangchainService()
-model = LLMService()
+"""
+    Prompting using Langchain: 
+    model = LangchainService()
+    response = await model.make_prompt(data.prompt)
+    
+    Prompting using OpenAI tools: 
+    model = LLMService()
+    response = await model.llm_response(data.prompt)
+"""
+model = LangchainService()
+#model = LLMService()
 
 @router.get("/prompt/{prompt}")
 async def get_prompt(prompt:str):
@@ -16,9 +25,8 @@ async def get_prompt(prompt:str):
 
 @router.post("/prompt/")
 async def post_prompt(data:InputQuery):
-    print(data.prompt)
-    #response = await model.make_prompt(data.prompt)
-    response = await model.llm_response(data.prompt)
+    response = await model.make_prompt(data.prompt)
+    #response = await model.llm_response(data.prompt)
     print(response)
     model_response = response['answer']
     if model_response is None:
